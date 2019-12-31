@@ -35,19 +35,19 @@ module.exports = {
         sourceMap: false,
         // css预设器配置项
         loaderOptions: {
-            // postcss: {
-            //     plugins: [
-            //         require("postcss-pxtorem")({
-            //             rootValue: 16, // html font-size
-            //             unitPrecision: 5,
-            //             propList: ["*"],
-            //             selectorBlackList: [],
-            //             replace: true,
-            //             mediaQuery: false,
-            //             minPixelValue: 3
-            //         })
-            //     ]
-            // }
+            postcss: {
+                plugins: [
+                    require("postcss-pxtorem")({
+                        rootValue: 16, // html font-size
+                        unitPrecision: 5,
+                        propList: ["*"],
+                        selectorBlackList: [],
+                        replace: true,
+                        mediaQuery: false,
+                        minPixelValue: 3
+                    })
+                ]
+            }
         },
         // 启用 CSS modules for all css / pre-processor files.
         modules: false
