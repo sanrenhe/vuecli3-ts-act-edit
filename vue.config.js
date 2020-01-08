@@ -1,6 +1,8 @@
 const path = require("path");
 const webpack = require('webpack');
 
+process.env.VUE_APP_EDIT_HOST = "https://raw.githubusercontent.com/sanrenhe";
+
 module.exports = {
     publicPath: "./",
     outputDir: "dist",// "dist"

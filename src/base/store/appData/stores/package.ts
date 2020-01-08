@@ -4,7 +4,7 @@ import { Dictionary } from "vue-router/types/router";;
 export default {
     namespaced: true,
     state: {
-        ignoreKeys: ["ext", "goodsType", "prizesType", "draw"],
+        ignoreKeys: ["ext", "goodsType", "awardsType", "draw"],
         extData: {}
     },
     mutations: {
@@ -61,24 +61,22 @@ export default {
                 // 与默认忽略处理的数据字段数组合并
                 let ignoreKeys = state.ignoreKeys.concat(customIgnoreKeys);
 
-                // 处理扩展字段数据
-                commit("ext_render", rootState.appData.editInfo["ext"]);
-
                 // 循环编辑数据，分发需要处理的数据至各个数据字段内的处理方法 （actions: <key>_render）
                 return new Promise((resolve, reject) => {
                     rootState.appData.actSet.editDataKey.forEach(
                         (key: string) => {
                             if (ignoreKeys.indexOf(key) == -1) {
                                 let actionName = key + "_render";
-
                                 // 传递的数据包：
                                 // content-数据内容
                                 // editInfo-所有编辑数据
                                 // extData-扩展字段
+                                // actSet-活动自定义设置
                                 let dataObj = {
                                     content: rootState.appData.editInfo[key],
                                     editInfo: rootState.appData.editInfo,
-                                    extData: state.extData[key]
+                                    extData: state.extData[key],
+                                    actSet: rootState.appData.actSet
                                 };
 
                                 dispatch(actionName, dataObj, {

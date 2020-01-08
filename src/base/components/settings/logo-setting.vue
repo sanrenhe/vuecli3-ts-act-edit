@@ -23,7 +23,7 @@
                             inactive-text="隐藏"
                             active-value="1"
                             inactive-value="2"
-                            v-model="info.activity.templet_set.logo_is_show"
+                            v-model="info.act.info.logo.is_show"
                             v-if="editEleBlackList.indexOf('logo_is_show') == -1"
                         >
                         </el-switch>
@@ -33,7 +33,7 @@
                 <el-row
                     type="flex"
                     class="edit-control_ele"
-                    v-if="info.activity.templet_set.logo_is_show == '1' && editEleBlackList.indexOf('logo_is_show') == -1"
+                    v-if="info.act.info.logo.is_show == '1' && editEleBlackList.indexOf('logo_is_show') == -1"
                 >
                     <el-col :span="6">
                         <p>LOGO图片：</p>
@@ -44,7 +44,7 @@
                             errTip="LOGO图片大小不能超过500K"
                             imgSize="500"
                             styles="width: 150px; height: 50px;"
-                            v-model="info.activity.templet_set.logo_url"
+                            v-model="info.act.info.logo.pic_url"
                         >
                             <template #tip>
                                 <div class="edit-img_tip">大小不能超过500K</div>

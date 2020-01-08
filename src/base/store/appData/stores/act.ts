@@ -1,7 +1,7 @@
 export default {
     namespaced: true,
     mutations: {
-        activity_render(state:any, data:any) {
+        act_render(state:any, data:any) {
             // 处理活动时间
             data.content.start_time = new Date(data.content.start_time * 1000);
             data.content.end_time = new Date(data.content.end_time * 1000);
@@ -14,11 +14,11 @@ export default {
         }
     },
     actions: {
-        activity_render: {
+        act_render: {
             root: true,
             handler({ commit }:any, data:any) {
                 return new Promise((resolve, reject) => {
-                    commit("activity_render", data);
+                    commit("act_render", data);
                     typeof resolve === "function" && resolve();
                 });
             }

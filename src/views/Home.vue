@@ -8,6 +8,10 @@
             type="success"
             @click="avGet"
         >获取数据</el-button>
+        <el-button
+            type="warning"
+            @click="avCreate"
+        >新建数据</el-button>
         <el-input
             type="textarea"
             placeholder="请输入内容"
@@ -22,6 +26,7 @@
 import { Component, Vue, Provide, Watch } from 'vue-property-decorator';
 import { Dictionary } from "vue-router/types/router";
 import { Message } from "element-ui";
+import $ from 'jquery'
 
 import AV from 'leancloud-storage';
 
@@ -31,6 +36,14 @@ export default class Home extends Vue {
 
     created() {
         this.avInit();
+        this.getDefalutData();
+    }
+
+    // 获取默认数据
+    public getDefalutData() {
+        $.getJSON('https://raw.githubusercontent.com/sanrenhe/sanrenhe/master/data.json', function (result1) {
+            console.log(result1);
+        });
     }
 
     // leancloud-初始化
@@ -42,10 +55,24 @@ export default class Home extends Vue {
         });
     }
 
+    // leancloud-新建对象
+    public avCreate() {
+        let DataObject = AV.Object.extend('ActEditData');
+        let dataObject = new DataObject();
+        dataObject.set('type', 'turntable');
+        dataObject.save().then((res: Dictionary<any>) => {
+             Message({
+                showClose: true,
+                message: '新建成功',
+                type: "success"
+            });
+        });
+    }
+
     // leancloud-更新对象
     public avUpdate() {
-        let TestObject = AV.Object.createWithoutData('TestObject', '5e0af40921460d006a0a461a');
-        TestObject.set('words', 'aaaa');
+        let TestObject = AV.Object.createWithoutData('ActEditData', '5e15457f21460d006a625edb');
+        TestObject.set('data', '');
         TestObject.save().then(() => {
             Message({
                 showClose: true,

@@ -68,7 +68,7 @@ class TapMessage {
         }
         if (name == 'share_title') {
             this.text = {
-                path: "activity.share_set.share_title",
+                path: "act.info.wx_share.title",
                 title: "分享标题",
                 set: "share",
                 tab: "base",
@@ -78,7 +78,7 @@ class TapMessage {
         }
         if (name == 'share_desc') {
             this.text = {
-                path: "activity.share_set.share_desc",
+                path: "act.info.wx_share.desc",
                 title: "分享描述",
                 set: "share",
                 tab: "base",
@@ -88,7 +88,7 @@ class TapMessage {
         }
         if (name == 'share_pic') {
             this.text = {
-                path: "activity.share_set.share_pic",
+                path: "act.info.wx_share.img",
                 title: "分享缩略图",
                 set: "share",
                 tab: "base",

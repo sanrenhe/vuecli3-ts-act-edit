@@ -38,26 +38,7 @@ const mutations: MutationTree<any> = {
 
         // 组装编辑数据
         this.dispatch("packageEditInfo");
-
-        // 处理平台白名单
-        for (let key in state.editInfo.platforms) {
-            // 初始化白名单
-            let whiteObj = {
-                count: 0,
-                platform_id: key,
-                platform_name: state.editInfo.platforms[key]
-            };
-            state.whiteSet.list.push(whiteObj);
-            state.whiteSet.platform_ids.push(key);
-        }
         console.log(state);
-    },
-    /**
-     * @description: 处理平台白名单数据列表
-     * @param {data: Dictionary<any>}
-     */
-    renderWhiteData(state: any, data: Dictionary<any>) {
-        state.whiteSet.list = data.length == 0 ? state.whiteSet.list : data;
         state.isShow = true;
     },
     /**

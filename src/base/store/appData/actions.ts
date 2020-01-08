@@ -3,6 +3,7 @@ import { Dictionary } from "vue-router/types/router";
 import http from "../../plugins/axios/http";
 import { api } from "../../plugins/axios/api";
 import { Message } from "element-ui";
+import $ from 'jquery'
 
 const actions: ActionTree<any, any> = {
     /**
@@ -16,30 +17,11 @@ const actions: ActionTree<any, any> = {
      * @description: 获取编辑数据
      * @param {id: string}
      */
-    async getData({ dispatch }, id: string) {
+    async getData({ dispatch }, type: string) {
         return new Promise((resolve, reject) => {
-            dispatch("getApiList", id).then(() => {
+            dispatch("getInfo", type).then(() => {
                 resolve();
             });
-        });
-    },
-    /**
-     * @description: 获取接口数据
-     * @param {id: string}
-     */
-    async getApiList({ state, dispatch }, id: string) {
-        return new Promise((resolve, reject) => {
-            http.get(api.getApiList + "/" + id)
-                .then((res: any) => {
-                    state.apiList = res.data;
-                    dispatch("getInfo").then(() => {
-                        resolve();
-                    });
-                })
-                .catch((error: any) => {
-                    console.error(error);
-                    reject();
-                });
         });
     },
     /**
@@ -48,10 +30,15 @@ const actions: ActionTree<any, any> = {
      */
     async getInfo({ state, commit }) {
         return new Promise((resolve, reject) => {
-            http.get(state.apiList.infoUrl).then((res: any) => {
-                commit("initData", res.data);
+            // http.get(api.getData).then((res: any) => {
+            //     commit("initData", res.data);
+            //     resolve();
+            //     this.dispatch("getWhiteList");
+            // });
+            $.getJSON(api.getData, function (data) {
+                console.log(data);
+                commit("initData", data);
                 resolve();
-                this.dispatch("getWhiteList");
             });
         });
     },
@@ -59,13 +46,13 @@ const actions: ActionTree<any, any> = {
      * @description: 获取平台白名单数据
      * @param {}
      */
-    async getWhiteList({ state, commit }) {
-        http.post(state.apiList.whiteCurCountUrl, {
-            platform_ids: state.whiteSet.platform_ids
-        }).then(res => {
-            commit("renderWhiteData", res.data);
-        });
-    },
+    // async getWhiteList({ state, commit }) {
+    //     http.post(state.apiList.whiteCurCountUrl, {
+    //         platform_ids: state.whiteSet.platform_ids
+    //     }).then(res => {
+    //         commit("renderWhiteData", res.data);
+    //     });
+    // },
     /**
      * @description: 保存前需要处理数据字段，即在保存前分发需要处理的编辑字段至每个对应的字段类型方法中处理
      * @param {data:any}

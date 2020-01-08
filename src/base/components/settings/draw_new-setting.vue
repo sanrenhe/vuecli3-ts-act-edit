@@ -57,7 +57,7 @@
                             :max="99"
                             v-model="info.draw.default_draw_num"
                             @blur="(e) => info.draw.default_draw_num = filterElInputNumber(info.draw.default_draw_num, 1)"
-                            :disabled="info.activity.status == 1"
+                            :disabled="info.act.status == 1"
                         ></el-input-number>
                     </el-col>
                 </el-row>
@@ -94,7 +94,7 @@
                             inactive-value="2"
                             v-model="day_add_draw_num_switch"
                             @change="i => info.draw.day_add_draw_num = i == '2' ? 0 : 1"
-                            :disabled="info.activity.status == 1"
+                            :disabled="info.act.status == 1"
                         >
                         </el-switch>
                     </el-col>
@@ -117,7 +117,7 @@
                                 v-model="info.draw.day_add_draw_num"
                                 @blur="(e) => info.draw.day_add_draw_num = filterElInputNumber(info.draw.day_add_draw_num, 1)"
                                 @change="i => day_add_draw_num_switch = i == 0 ? '2' : '1'"
-                                :disabled="info.activity.status == 1"
+                                :disabled="info.act.status == 1"
                             ></el-input-number>
                         </el-col>
                     </template>

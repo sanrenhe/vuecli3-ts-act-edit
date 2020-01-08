@@ -74,15 +74,15 @@ Vue.mixin({
           if (isPrize != -1) {
               let showPrize;
               if (
-                  this.$store.state.appData.prize[
-                      this.$store.state.appData.prize.type
+                  this.$store.state.appData.award[
+                      this.$store.state.appData.award.type
                   ].length == 0
               ) {
-                  showPrize = this.$store.state.appData.prize["general"][0];
+                  showPrize = this.$store.state.appData.award["general_1"][0];
               } else {
-                  showPrize = this.$store.state.appData.prize[
-                      this.$store.state.appData.prize.type
-                  ][this.$store.state.appData.prize.index];
+                  showPrize = this.$store.state.appData.award[
+                      this.$store.state.appData.award.type
+                  ][this.$store.state.appData.award.index];
               }
               let prize = showPrize;
               pagePath = pagePath.replace("prizeId", prize.id);

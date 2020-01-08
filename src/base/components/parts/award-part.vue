@@ -5,7 +5,7 @@
         <el-row
             type="flex"
             class="edit-control_ele"
-            v-if="eleFillter('prize.short_name', false)"
+            v-if="eleFillter('award.short_name', false)"
         >
             <el-col :span="6">
                 <p>奖品简称：</p>
@@ -16,16 +16,16 @@
                     size="medium"
                     maxlength="8"
                     show-word-limit
-                    v-model="prize.short_name"
+                    v-model="award.short_name"
                 >
                 </el-input>
             </el-col>
         </el-row>
         <!-- 奖品名称 -->
         <div
-            :class="{ 'edit-active': eleActive('prize.' + index + '.name')}"
+            :class="{ 'edit-active': eleActive('award.' + index + '.name')}"
             @mouseover="eleMouseover"
-            v-if="eleFillter('prize.name', false)"
+            v-if="eleFillter('award.name', false)"
         >
             <el-row
                 type="flex"
@@ -40,7 +40,7 @@
                         size="medium"
                         maxlength="15"
                         show-word-limit
-                        v-model="prize.name"
+                        v-model="award.name"
                     >
                     </el-input>
                 </el-col>
@@ -48,9 +48,9 @@
         </div>
         <!-- 奖品类型 -->
         <div
-            :class="{ 'edit-active': eleActive('prize.' + index + '.type')}"
+            :class="{ 'edit-active': eleActive('award.' + index + '.type')}"
             @mouseover="eleMouseover"
-            v-if="eleFillter('prize.type', false)"
+            v-if="eleFillter('award.type', false)"
         >
             <el-row
                 type="flex"
@@ -74,15 +74,15 @@
                 </el-col>
                 <el-col :span="18">
                     <el-select
-                        v-model="prize.type"
+                        v-model="award.type"
                         placeholder="请选择奖品类型"
-                        @change="prizeTypeChange"
-                        :disabled="info.activity.status == 1 && prize.is_valid == 1"
+                        @change="awardTypeChange"
+                        :disabled="info.act.status == 1 && award.is_valid == 1"
                     >
                         <el-option
-                            v-for="(prize, key) in typeOptions"
+                            v-for="(award, key) in typeOptions"
                             :key="key"
-                            :label="prize.name"
+                            :label="award.name"
                             :value="key"
                         >
                         </el-option>
@@ -94,7 +94,7 @@
         <el-row
             type="flex"
             class="edit-control_ele"
-            v-if="prize.type == 'tyq'"
+            v-if="award.type == 'tyq'"
         >
             <el-col :span="6">
                 <p>通用码：</p>
@@ -105,7 +105,7 @@
                     size="medium"
                     maxlength="30"
                     show-word-limit
-                    v-model="prize.generic_code"
+                    v-model="award.generic_code"
                 >
                 </el-input>
             </el-col>
@@ -114,18 +114,18 @@
         <el-row
             type="flex"
             class="edit-control_ele"
-            v-if="eleFillter('prize.num', false)"
+            v-if="eleFillter('award.num', false)"
         >
             <el-col :span="6">
                 <p>奖品数量：</p>
             </el-col>
             <el-col :span="18">
                 <!-- 电子券奖品数量为导入电子券码数量 -->
-                <template v-if="prize.is_dzq == 1">
+                <template v-if="award.is_dzq == 1">
                     <el-input-number
                         disabled
                         size="medium"
-                        v-model="prize.code_num"
+                        v-model="award.code_num"
                         :max="99999999"
                         label="奖品数量"
                     ></el-input-number>
@@ -133,19 +133,19 @@
                 <!-- 非电子券奖品数量 -->
                 <template v-else>
                     <el-input-number
-                        v-if="info.activity.status == 1 && prize.is_valid == 1"
+                        v-if="info.act.status == 1 && award.is_valid == 1"
                         size="medium"
-                        v-model="prize.input_num"
-                        @blur="(e) => prize.input_num = filterElInputNumber(prize.input_num, prize.minnum)"
-                        :min="prize.minnum"
+                        v-model="award.input_num"
+                        @blur="(e) => award.input_num = filterElInputNumber(award.input_num, award.minnum)"
+                        :min="award.minnum"
                         :max="99999999"
                         label="奖品数量"
                     ></el-input-number>
                     <el-input-number
                         v-else
                         size="medium"
-                        v-model="prize.input_num"
-                        @blur="(e) => prize.input_num = filterElInputNumber(prize.input_num, 0)"
+                        v-model="award.input_num"
+                        @blur="(e) => award.input_num = filterElInputNumber(award.input_num, 0)"
                         :min="0"
                         :max="99999999"
                         label="奖品数量"
@@ -157,7 +157,7 @@
         <el-row
             type="flex"
             class="edit-control_ele"
-            v-if="eleFillter('prize.money', false)"
+            v-if="eleFillter('award.money', false)"
         >
             <el-col :span="6">
                 <p>
@@ -177,10 +177,10 @@
             </el-col>
             <el-col :span="18">
                 <el-input-number
-                    :disabled="info.activity.status == 1 && prize.is_valid == 1"
+                    :disabled="info.act.status == 1 && award.is_valid == 1"
                     size="medium"
-                    v-model="prize.money"
-                    @blur="(e) => prize.money = filterElInputNumber(prize.money, 0.00)"
+                    v-model="award.money"
+                    @blur="(e) => award.money = filterElInputNumber(award.money, 0.00)"
                     :precision="2"
                     :step="1"
                     :min="0"
@@ -189,13 +189,13 @@
             </el-col>
         </el-row>
         <!-- 扩展设置 -->
-        <slot name="part-ext" :prize="prize">
+        <slot name="part-ext" :award="award">
         </slot>
         <!-- 消费地址 type=='typ' || 'xsxf' -->
         <el-row
             type="flex"
             class="edit-control_ele"
-            v-if="prize.type == 'tyq' || prize.type == 'xsxf'"
+            v-if="award.type == 'tyq' || award.type == 'xsxf'"
         >
             <el-col :span="6">
                 <p>消费地址：</p>
@@ -207,16 +207,16 @@
                     maxlength="200"
                     show-word-limit
                     type="textarea"
-                    v-model="prize.use_url"
+                    v-model="award.use_url"
                 >
                 </el-input>
             </el-col>
         </el-row>
         <!-- 奖品图片 -->
         <div
-            :class="{ 'edit-active': eleActive('prize.' + index + '.pic_url')}"
+            :class="{ 'edit-active': eleActive('award.' + index + '.pic_url')}"
             @mouseover="eleMouseover"
-            v-if="eleFillter('prize.pic_url', false)"
+            v-if="eleFillter('award.pic_url', false)"
         >
             <el-row
                 type="flex"
@@ -230,7 +230,7 @@
                     <image-part
                         errTip="奖品图片大小不能超过500K"
                         imgSize="500"
-                        v-model="prize.pic_url"
+                        v-model="award.pic_url"
                     >
                         <template #tip>
                             <div class="edit-img_tip">大小不能超过500K</div>
@@ -243,18 +243,18 @@
         <el-row
             type="flex"
             class="edit-control_ele"
-            v-if="eleFillter('prize.desc', false)"
+            v-if="eleFillter('award.desc', false)"
         >
             <el-col :span="6">
                 <p>奖品说明：</p>
             </el-col>
             <el-col :span="18">
-                <editor-part v-model="prize.desc" />
+                <editor-part v-model="award.desc" />
             </el-col>
         </el-row>
         <!-- 券码设置 -->
         <el-divider
-            v-if="prize.is_dzq == 1"
+            v-if="award.is_dzq == 1"
             content-position="left"
         >
             券码设置
@@ -262,7 +262,7 @@
         <el-row
             type="flex"
             class="edit-control_ele"
-            v-if="prize.is_dzq == 1"
+            v-if="award.is_dzq == 1"
         >
             <el-col :span="6">
                 <p>导入券码：</p>
@@ -292,13 +292,13 @@
             </el-col>
         </el-row>
         <!-- 限制设置 -->
-        <slot name="limit-ext" :prize="prize">
+        <slot name="limit-ext" :award="award">
         </slot>
         <!-- 安慰奖品高级设置 -->
         <template v-if="type == 'comfort'">
             <el-divider
                 content-position="left"
-                v-if="eleFillter('prize.prize_person_max_win_num_comfort', false)"
+                v-if="eleFillter('award.award_person_max_win_num_comfort', false)"
             >
                 高级设置<em class="edit-divider_tip">（0代表不限制）</em>
             </el-divider>
@@ -306,7 +306,7 @@
             <el-row
                 type="flex"
                 class="edit-control_ele"
-                v-if="eleFillter('prize.prize_person_max_win_num_comfort', false)"
+                v-if="eleFillter('award.award_person_max_win_num_comfort', false)"
             >
                 <el-col
                     class="edit-title_long"
@@ -316,8 +316,8 @@
                 </el-col>
                 <el-col :span="10">
                     <el-input-number
-                        v-model="prize.prize_person_max_win_num"
-                        @blur="(e) => prize.prize_person_max_win_num = filterElInputNumber(prize.prize_person_max_win_num, 1)"
+                        v-model="award.award_person_max_win_num"
+                        @blur="(e) => award.award_person_max_win_num = filterElInputNumber(award.award_person_max_win_num, 1)"
                         controls-position="right"
                         size="medium"
                         :min="0"
@@ -332,7 +332,7 @@
         <template v-if="type == 'general'">
             <el-divider
                 content-position="left"
-                v-if="eleFillter('prize.prize_max_win_num', false) || eleFillter('prize.prize_person_max_win_num', false) || eleFillter('prize.prize_person_day_max_win_num', false)"
+                v-if="eleFillter('award.award_max_win_num', false) || eleFillter('award.award_person_max_win_num', false) || eleFillter('award.award_person_day_max_win_num', false)"
             >
                 高级设置<em class="edit-divider_tip">（0代表不限制）</em>
             </el-divider>
@@ -340,7 +340,7 @@
             <el-row
                 type="flex"
                 class="edit-control_ele"
-                v-if="eleFillter('prize.prize_max_win_num', false)"
+                v-if="eleFillter('award.award_max_win_num', false)"
             >
                 <el-col
                     class="edit-title_long"
@@ -350,8 +350,8 @@
                 </el-col>
                 <el-col :span="10">
                     <el-input-number
-                        v-model="prize.prize_max_win_num"
-                        @blur="(e) => prize.prize_max_win_num = filterElInputNumber(prize.prize_max_win_num, 0)"
+                        v-model="award.award_max_win_num"
+                        @blur="(e) => award.award_max_win_num = filterElInputNumber(award.award_max_win_num, 0)"
                         controls-position="right"
                         size="medium"
                         :min="0"
@@ -365,7 +365,7 @@
             <el-row
                 type="flex"
                 class="edit-control_ele"
-                v-if="eleFillter('prize.prize_person_max_win_num', false)"
+                v-if="eleFillter('award.award_person_max_win_num', false)"
             >
                 <el-col
                     class="edit-title_long"
@@ -375,8 +375,8 @@
                 </el-col>
                 <el-col :span="10">
                     <el-input-number
-                        v-model="prize.prize_person_max_win_num"
-                        @blur="(e) => prize.prize_person_max_win_num = filterElInputNumber(prize.prize_person_max_win_num, 1)"
+                        v-model="award.award_person_max_win_num"
+                        @blur="(e) => award.award_person_max_win_num = filterElInputNumber(award.award_person_max_win_num, 1)"
                         controls-position="right"
                         size="medium"
                         :min="0"
@@ -390,7 +390,7 @@
             <el-row
                 type="flex"
                 class="edit-control_ele"
-                v-if="eleFillter('prize.prize_person_day_max_win_num', false)"
+                v-if="eleFillter('award.award_person_day_max_win_num', false)"
             >
                 <el-col
                     class="edit-title_long"
@@ -400,8 +400,8 @@
                 </el-col>
                 <el-col :span="10">
                     <el-input-number
-                        v-model="prize.prize_person_day_max_win_num"
-                        @blur="(e) => prize.prize_person_day_max_win_num = filterElInputNumber(prize.prize_person_day_max_win_num, 1)"
+                        v-model="award.award_person_day_max_win_num"
+                        @blur="(e) => award.award_person_day_max_win_num = filterElInputNumber(award.award_person_day_max_win_num, 1)"
                         controls-position="right"
                         size="medium"
                         :min="0"
@@ -430,14 +430,14 @@ import EditorPart from '../parts/editor-part.vue';
         EditorPart
     }
 })
-export default class PrizePart extends Part {
+export default class awardPart extends Part {
     constructor() {
         super({ 'warn': '活动开启后不可更改' })
     }
     @Getter public activeEdit!: Dictionary<any>;
 
     @Prop(Object)
-    prize!: Dictionary<any>         // 奖品value
+    award!: Dictionary<any>         // 奖品value
 
     @Prop(Object)
     typeOptions!: Dictionary<any>   // 奖品类型集合
@@ -452,8 +452,8 @@ export default class PrizePart extends Part {
      * @description: 奖品类型选择
      * @param {val: number}
      */
-    public prizeTypeChange(val: number) {
-        this.prize.is_dzq = this.typeOptions[val].is_dzq;
+    public awardTypeChange(val: number) {
+        this.award.is_dzq = this.typeOptions[val].is_dzq;
     }
 
     /**
@@ -472,11 +472,11 @@ export default class PrizePart extends Part {
         let formFile = new FormData();
 
         formFile.append('codeFile', file.file);
-        formFile.append('prizeId', this.prize.id);
+        formFile.append('awardId', this.award.id);
 
         this.$http.upLoadFile(this.apiList.importUrl, formFile).then((res: Dictionary<any>) => {
             if (res.status == 'success') {
-                this.prize.code_num = this.prize.is_dzq == 1 ? res.data : this.prize.code_num;
+                this.award.code_num = this.award.is_dzq == 1 ? res.data : this.award.code_num;
                 this.$message({
                     showClose: true,
                     message: res.message,

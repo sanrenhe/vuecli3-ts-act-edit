@@ -1,7 +1,7 @@
 /**
  * 后台编辑接口
  */
-const HOST = process.env.VUE_APP_HDCRM_HOST;
+const HOST = process.env.VUE_APP_EDIT_HOST;
 export const api = {
-    getApiList: HOST + '/activitys/getEditApiList', // 获取接口地址接口
+    getData: HOST + '/sanrenhe/master/data.json', // 获取活动数据
 }

@@ -158,7 +158,7 @@ export default class UiwrapBar extends Bar {
             }
         );
         this.updateActiveNames(this.activeEdit.ele.text.set);
-
+        console.log(this.activeEdit)
         window.setTimeout(function () {
             $('.el-tab-pane').animate({
                 scrollTop: $('.edit-active')[0].offsetTop - 100

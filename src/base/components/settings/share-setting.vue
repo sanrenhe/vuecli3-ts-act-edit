@@ -10,8 +10,8 @@
             >
                 <!-- 分享标题 -->
                 <div
-                    :class="{ 'edit-active': eleActive('activity.share_set.share_title')}"
-                    v-if="eleFillter('activity.share_set.share_title')"
+                    :class="{ 'edit-active': eleActive('act.info.wx_share.title')}"
+                    v-if="eleFillter('act.wx_share.title')"
                     @mouseover="eleMouseover"
                 >
                     <el-row
@@ -27,15 +27,15 @@
                                 size="medium"
                                 maxlength="25"
                                 show-word-limit
-                                v-model="info.activity.share_set.share_title"
+                                v-model="info.act.wx_share.title"
                             ></el-input>
                         </el-col>
                     </el-row>
                 </div>
                 <!-- 分享描述 -->
                 <div
-                    :class="{ 'edit-active': eleActive('activity.share_set.share_desc')}"
-                    v-if="eleFillter('activity.share_set.share_desc')"
+                    :class="{ 'edit-active': eleActive('act.info.wx_share.desc')}"
+                    v-if="eleFillter('act.wx_share.desc')"
                     @mouseover="eleMouseover"
                 >
                     <el-row
@@ -52,15 +52,15 @@
                                 maxlength="30"
                                 show-word-limit
                                 type="textarea"
-                                v-model="info.activity.share_set.share_desc"
+                                v-model="info.act.wx_share.desc"
                             ></el-input>
                         </el-col>
                     </el-row>
                 </div>
                 <!-- 分享缩略图 -->
                 <div
-                    :class="{ 'edit-active': eleActive('activity.share_set.share_pic')}"
-                    v-if="eleFillter('activity.share_set.share_pic')"
+                    :class="{ 'edit-active': eleActive('act.info.wx_share.img')}"
+                    v-if="eleFillter('act.wx_share.img')"
                     @mouseover="eleMouseover"
                 >
                     <el-row
@@ -76,7 +76,7 @@
                             <image-part
                                 errTip="分享缩略图片大小不能超过500K"
                                 imgSize="500"
-                                v-model="info.activity.share_set.share_pic"
+                                v-model="info.act.wx_share.img"
                             >
                                 <template #tip>
                                     <div class="edit-img_tip">建议尺寸 200*200，大小不能超过500K</div>

@@ -5,20 +5,20 @@
             <!-- 微信分享-标题 -->
             <div class="share_title">
                 <p v-edit-tap="{name:'share_title'}">
-                    {{info.activity.share_set.share_title}}
+                    {{info.act.wx_share.title}}
                 </p>
             </div>
             <!-- 微信分享-描述 -->
             <div class="share_info">
                 <p v-edit-tap="{name:'share_desc'}">
-                    {{info.activity.share_set.share_desc}}
+                    {{info.act.wx_share.desc}}
                 </p>
             </div>
             <!-- 微信分享-图片 -->
             <div class="share_pic">
                 <img
                     v-edit-tap="{name:'share_pic'}"
-                    :src="info.activity.share_set.share_pic"
+                    :src="info.act.wx_share.img"
                 >
             </div>
         </div>
@@ -27,17 +27,17 @@
             <!-- 微信分享-标题 -->
             <div class="share_title">
                 <p>
-                    {{info.activity.share_set.share_title}}
+                    {{info.act.wx_share.title}}
                 </p>
             </div>
             <!-- 微信分享-描述 -->
             <div class="share_info">
-                {{info.activity.share_set.share_desc}}
+                {{info.act.wx_share.desc}}
             </div>
             <!-- 微信分享-图片 -->
             <div class="share_pic">
                 <img
-                    :src="info.activity.share_set.share_pic"
+                    :src="info.act.wx_share.img"
                     alt=""
                 >
             </div>
