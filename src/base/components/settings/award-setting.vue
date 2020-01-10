@@ -240,6 +240,11 @@ export default class awardSet extends Setting {
         code_num: 0, // 券码数量
         input_num: 0, // 非券码数量
         other_temp_set: {}, // 其他配置
+        title: '',
+        tabIndex: 0,
+        seq: '',
+        close: true,
+        changeIndex: 0
     }
 
     private percentSet = {
@@ -443,39 +448,36 @@ export default class awardSet extends Setting {
         let area = this.appData.award.type.split('_')[1];
         let tabs = (<any>this)[this.appData.award.type].tabs;
         let tabValue = (<any>this)[this.appData.award.type].tab_value;
-
+        // 添加奖品
         if (action === 'add') {
             let nextIndex = tabs.length + 1;
             let nextTabName = (++(<any>this)[this.appData.award.type].index_next).toString();
 
-            this.$http.post(this.apiList.addawardUrl, { area: area }).then((res: Dictionary<any>) => {
-                if (res.status == 'success') {
-                    let obj = $.extend({}, this.defaultawardData, res.data);
-                    obj.title = (<any>this)[this.appData.award.type].award_title;
-                    obj.name = (<any>this)[this.appData.award.type].award_title;
-                    obj.tabIndex = nextIndex;
-                    obj.seq = nextTabName;
-                    obj.close = true;
-                    obj.changeIndex = 0;
+            let obj = $.extend({}, this.defaultawardData, {});
+            obj.title = (<any>this)[this.appData.award.type].award_title;
+            obj.name = (<any>this)[this.appData.award.type].award_title;
+            obj.tabIndex = nextIndex;
+            obj.seq = nextTabName;
+            obj.close = true;
+            obj.changeIndex = 0;
 
-                    tabs.push(obj);
-                    (<any>this)[this.appData.award.type].tab_value = nextTabName;
+            tabs.push(obj);
+            (<any>this)[this.appData.award.type].tab_value = nextTabName;
 
-                    if ((<any>this)[this.appData.award.type].probability_set) {
-                        tabs.forEach((award: Dictionary<any>) => {
-                            award.maxPercentSet = award.probability_num + (<any>this)[this.appData.award.type].percent_max_set - (<any>this)[this.appData.award.type].percent_total;
-                        });
-                    }
+            if ((<any>this)[this.appData.award.type].probability_set) {
+                tabs.forEach((award: Dictionary<any>) => {
+                    award.maxPercentSet = award.probability_num + (<any>this)[this.appData.award.type].percent_max_set - (<any>this)[this.appData.award.type].percent_total;
+                });
+            }
 
-                    this.resetTabIndex(tabs);
-                } else {
-                    this.$message({
-                        message: res.message,
-                        type: 'warning'
-                    })
-                }
-            })
+            this.$message({
+                message: '添加成功！',
+                type: 'success'
+            });
+
+            this.resetTabIndex(tabs);
         }
+        // 删除奖品
         if (action === 'remove') {
             let awardId = '';
             tabs.forEach((tab: Dictionary<any>) => {
@@ -484,76 +486,67 @@ export default class awardSet extends Setting {
                 }
             })
 
-            this.$http.post(this.apiList.delawardUrl, { awardId: awardId }).then((res: Dictionary<any>) => {
-                if (res.status == 'success') {
-                    this.$message(res.message);
-                    if (tabValue == targetName) {
-                        tabs.forEach((tab: Dictionary<any>, index: number) => {
-                            if (tab.seq == targetName) {
-                                let nextTab = tabs[index + 1] || tabs[index - 1]
-                                if (nextTab) {
-                                    (<any>this)[this.appData.award.type].tab_value = nextTab.seq;
-                                }
-                            }
-                        })
+            this.$message('删除成功！');
+            if (tabValue == targetName) {
+                tabs.forEach((tab: Dictionary<any>, index: number) => {
+                    if (tab.seq == targetName) {
+                        let nextTab = tabs[index + 1] || tabs[index - 1]
+                        if (nextTab) {
+                            (<any>this)[this.appData.award.type].tab_value = nextTab.seq;
+                        }
                     }
+                })
+            }
 
-                    tabs.forEach((award: Dictionary<any>, index: number) => {
-                        if (award.seq == targetName) {
-                            tabs.splice(index, 1)
+            tabs.forEach((award: Dictionary<any>, index: number) => {
+                if (award.seq == targetName) {
+                    tabs.splice(index, 1)
+                }
+            });
+
+            // 计算每个奖池总中奖概率
+            this.appData.award.awardSetCustom.forEach((item: Dictionary<any>) => {
+                let key = 'general_' + item.area;
+                if (item.probability_set) {
+                    (<any>this)[key].percent_total = 0;
+                    (<any>this)[key].tabs.forEach((award: Dictionary<any>, index: number) => {
+                        if (award.status == 1) {
+                            (<any>this)[key].percent_total += award.probability_num;
                         }
-                    });
-
-                    // 计算每个奖池总中奖概率
-                    this.appData.award.awardSetCustom.forEach((item: Dictionary<any>) => {
-                        let key = 'general_' + item.area;
-                        if (item.probability_set) {
-                            (<any>this)[key].percent_total = 0;
-                            (<any>this)[key].tabs.forEach((award: Dictionary<any>, index: number) => {
-                                if (award.status == 1) {
-                                    (<any>this)[key].percent_total += award.probability_num;
-                                }
-                            });
-                        }
-                    });
-
-                    // 初始化每个奖品还可设置最大中奖概率值
-                    this.appData.award.awardSetCustom.forEach((item: Dictionary<any>) => {
-                        let key = 'general_' + item.area;
-                        if (item.probability_set) {
-                            (<any>this)[key].tabs.forEach((award: Dictionary<any>, index: number) => {
-                                award.maxPercentSet = award.probability_num + (<any>this)[key].percent_max_set - (<any>this)[key].percent_total;
-                            });
-                        }
-                        this.updateawardTabs((<any>this)[key].tabs, key);
-                    });
-
-                    if ((<any>this)[this.appData.award.type].probability_set) {
-                        // 计算每个奖池总中奖概率
-                        (<any>this)[this.appData.award.type].percent_total = 0;
-                        tabs.forEach((award: Dictionary<any>) => {
-                            if (award.status == 1) {
-                                (<any>this)[this.appData.award.type].percent_total += award.probability_num;
-                            }
-                            award.maxPercentSet = award.probability_num + (<any>this)[this.appData.award.type].percent_max_set - (<any>this)[this.appData.award.type].percent_total;
-                        });
-
-                        // 更新每个奖品还可设置最大中奖概率值
-                        tabs.forEach((award: Dictionary<any>) => {
-                            if (award.status == 1) {
-                                award.maxPercentSet = award.probability_num + (<any>this)[this.appData.award.type].percent_max_set - (<any>this)[this.appData.award.type].percent_total;
-                            }
-                        });
-                    }
-
-                    this.resetTabIndex(tabs);
-                } else {
-                    this.$message({
-                        message: res.message,
-                        type: 'warning'
                     });
                 }
-            })
+            });
+
+            // 初始化每个奖品还可设置最大中奖概率值
+            this.appData.award.awardSetCustom.forEach((item: Dictionary<any>) => {
+                let key = 'general_' + item.area;
+                if (item.probability_set) {
+                    (<any>this)[key].tabs.forEach((award: Dictionary<any>, index: number) => {
+                        award.maxPercentSet = award.probability_num + (<any>this)[key].percent_max_set - (<any>this)[key].percent_total;
+                    });
+                }
+                this.updateawardTabs((<any>this)[key].tabs, key);
+            });
+
+            if ((<any>this)[this.appData.award.type].probability_set) {
+                // 计算每个奖池总中奖概率
+                (<any>this)[this.appData.award.type].percent_total = 0;
+                tabs.forEach((award: Dictionary<any>) => {
+                    if (award.status == 1) {
+                        (<any>this)[this.appData.award.type].percent_total += award.probability_num;
+                    }
+                    award.maxPercentSet = award.probability_num + (<any>this)[this.appData.award.type].percent_max_set - (<any>this)[this.appData.award.type].percent_total;
+                });
+
+                // 更新每个奖品还可设置最大中奖概率值
+                tabs.forEach((award: Dictionary<any>) => {
+                    if (award.status == 1) {
+                        award.maxPercentSet = award.probability_num + (<any>this)[this.appData.award.type].percent_max_set - (<any>this)[this.appData.award.type].percent_total;
+                    }
+                });
+            }
+
+            this.resetTabIndex(tabs);
         }
     }
 

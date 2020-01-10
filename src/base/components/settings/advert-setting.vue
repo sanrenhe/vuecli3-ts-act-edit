@@ -206,7 +206,7 @@ export default class AdvertSet extends Setting {
     private tabValue: string = ''
     private tabNextIndex!: number
 
-    private defaultAdData: Object = {
+    private defaultAdData = {
         id: 0, // 广告id
         is_show: '2', // 是否显示 1-显示  2-隐藏
         position: '', // 广告位置
@@ -214,6 +214,8 @@ export default class AdvertSet extends Setting {
         img_url: '', // 广告图片
         img_link: '', // 图片链接
         img_title: '', // 图片说明
+        tabTitle: '',
+        seq: ''
     }
 
     mounted() {
@@ -259,22 +261,17 @@ export default class AdvertSet extends Setting {
             let nextIndex = this.tabs.length + 1;
             let nextTabName = (++this.tabNextIndex).toString();
 
-            this.$http.post(this.apiList.createAdUrl).then((res: Dictionary<any>) => {
-                if (res.status == 'success') {
-                    let obj = $.extend({}, this.defaultAdData, res.data);
-                    obj.id = res.data;
-                    obj.tabTitle = '广告' + nextIndex;
-                    obj.seq = nextTabName;
-                    this.tabs.push(obj);
-                    this.tabValue = nextTabName;
+            let obj = $.extend({}, this.defaultAdData, {});
+            obj.tabTitle = '广告' + nextIndex;
+            obj.seq = nextTabName;
+            this.tabs.push(obj);
+            this.tabValue = nextTabName;
 
-                    this.tabs.length == 0 ? this.advert_updateIndex(0) : this.advert_updateIndex(this.tabs.length - 1);
-                } else {
-                    this.$message({
-                        message: res.message,
-                        type: 'warning'
-                    })
-                }
+            this.tabs.length == 0 ? this.advert_updateIndex(0) : this.advert_updateIndex(this.tabs.length - 1);
+
+            this.$message({
+                message: '添加成功！',
+                type: 'success'
             })
         }
         if (action == 'remove') {
@@ -284,33 +281,30 @@ export default class AdvertSet extends Setting {
                     advertId = this.tabs[index].id;
                 }
             })
-            this.$http.post(this.apiList.deleteAdUrl, { id: advertId }).then((res: Dictionary<any>) => {
-                if (res.status == 'success') {
-                    this.$message(res.message);
 
-                    if (this.tabValue == targetName) {
-                        this.tabs.forEach((tab: Dictionary<any>, index: number) => {
-                            if (tab.seq == targetName) {
-                                let nextTab = this.tabs[index + 1] || this.tabs[index - 1];
-                                if (nextTab) {
-                                    this.tabValue = nextTab;
-                                }
-                            }
-                        })
-                    }
-                }
+            this.$message('删除成功！');
 
+            if (this.tabValue == targetName) {
                 this.tabs.forEach((tab: Dictionary<any>, index: number) => {
                     if (tab.seq == targetName) {
-                        this.tabs.splice(index, 1)
+                        let nextTab = this.tabs[index + 1] || this.tabs[index - 1];
+                        if (nextTab) {
+                            this.tabValue = nextTab;
+                        }
                     }
                 })
+            }
 
-                this.tabs.forEach((tab: Dictionary<any>, index: number) => {
-                    tab.tabTitle = '广告' + (index + 1);
-                })
-                this.tabs.length == 0 ? this.advert_updateIndex(0) : this.advert_updateIndex(this.tabs.length - 1);
+            this.tabs.forEach((tab: Dictionary<any>, index: number) => {
+                if (tab.seq == targetName) {
+                    this.tabs.splice(index, 1)
+                }
             })
+
+            this.tabs.forEach((tab: Dictionary<any>, index: number) => {
+                tab.tabTitle = '广告' + (index + 1);
+            })
+            this.tabs.length == 0 ? this.advert_updateIndex(0) : this.advert_updateIndex(this.tabs.length - 1);
         }
     }
 }
