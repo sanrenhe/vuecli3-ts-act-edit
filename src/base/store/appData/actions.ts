@@ -4,6 +4,7 @@ import http from "../../plugins/axios/http";
 import { api } from "../../plugins/axios/api";
 import { Message } from "element-ui";
 import $ from 'jquery'
+import AV from 'leancloud-storage';
 
 const actions: ActionTree<any, any> = {
     /**
@@ -19,6 +20,11 @@ const actions: ActionTree<any, any> = {
      */
     async getData({ dispatch }, type: string) {
         return new Promise((resolve, reject) => {
+            AV.init({
+                appId: "TBk0Vh6PATq4y8t7Mnl0FSkP-gzGzoHsz",
+                appKey: "4jfp4zUMcMMMmUhMfzLaNNlm",
+                serverURLs: "https://tbk0vh6p.lc-cn-n1-shared.com"
+            });
             dispatch("getInfo", type).then(() => {
                 resolve();
             });
@@ -30,29 +36,18 @@ const actions: ActionTree<any, any> = {
      */
     async getInfo({ state, commit }) {
         return new Promise((resolve, reject) => {
-            // http.get(api.getData).then((res: any) => {
-            //     commit("initData", res.data);
+            // $.getJSON(api.getData, function (data) {
+            //     console.log(data);
+            //     commit("initData", data);
             //     resolve();
-            //     this.dispatch("getWhiteList");
             // });
-            $.getJSON(api.getData, function (data) {
-                console.log(data);
-                commit("initData", data);
+            let query = new AV.Query('ActEditData');
+            query.get('5e15457f21460d006a625edb').then((todo: Dictionary<any>) => {
+                commit("initData", todo._serverData.data);
                 resolve();
             });
         });
     },
-    /**
-     * @description: 获取平台白名单数据
-     * @param {}
-     */
-    // async getWhiteList({ state, commit }) {
-    //     http.post(state.apiList.whiteCurCountUrl, {
-    //         platform_ids: state.whiteSet.platform_ids
-    //     }).then(res => {
-    //         commit("renderWhiteData", res.data);
-    //     });
-    // },
     /**
      * @description: 保存前需要处理数据字段，即在保存前分发需要处理的编辑字段至每个对应的字段类型方法中处理
      * @param {data:any}
@@ -155,31 +150,45 @@ const actions: ActionTree<any, any> = {
      */
     async saveInfo({ state, dispatch, commit }) {
         return new Promise((resolve, reject) => {
-            http.post(state.apiList.saveUrl, state.saveData).then(
-                (res: Dictionary<any>) => {
-                    if (res.status == "success") {
-                        resolve();
-                        Message({
-                            showClose: true,
-                            message: res.message,
-                            type: "success"
-                        });
-                        // 保存后更新编辑数据
-                        dispatch("updateData");
-                        commit("updateEditInfoStatus", 0);
-                    } else {
-                        Message({
-                            showClose: true,
-                            message: res.message,
-                            type: "error",
-                            duration: 5000
-                        });
-                        if (res.data) {
-                            commit("handleError", res.data);
-                        }
-                    }
-                }
-            );
+            // http.post(state.apiList.saveUrl, state.saveData).then(
+            //     (res: Dictionary<any>) => {
+            //         if (res.status == "success") {
+            //             resolve();
+            //             Message({
+            //                 showClose: true,
+            //                 message: res.message,
+            //                 type: "success"
+            //             });
+            //             // 保存后更新编辑数据
+            //             dispatch("updateData");
+            //             commit("updateEditInfoStatus", 0);
+            //         } else {
+            //             Message({
+            //                 showClose: true,
+            //                 message: res.message,
+            //                 type: "error",
+            //                 duration: 5000
+            //             });
+            //             if (res.data) {
+            //                 commit("handleError", res.data);
+            //             }
+            //         }
+            //     }
+            // );
+
+            let TestObject = AV.Object.createWithoutData('ActEditData', '5e15457f21460d006a625edb');
+            TestObject.set('data', state.saveData);
+            TestObject.save().then(() => {
+                resolve();
+                Message({
+                    showClose: true,
+                    message: '保存成功',
+                    type: "success"
+                });
+                // 保存后更新编辑数据
+                dispatch("updateData");
+                commit("updateEditInfoStatus", 0);
+            });
         });
     },
     /**

@@ -33,6 +33,7 @@ import AV from 'leancloud-storage';
 @Component
 export default class Home extends Vue {
     private data: string = '';
+    private defaultData!: Dictionary<any>
 
     created() {
         this.avInit();
@@ -41,8 +42,9 @@ export default class Home extends Vue {
 
     // 获取默认数据
     public getDefalutData() {
-        $.getJSON('https://raw.githubusercontent.com/sanrenhe/sanrenhe/master/data.json', function (result1) {
+        $.getJSON('https://raw.githubusercontent.com/sanrenhe/sanrenhe/master/data.json', (result1) => {
             console.log(result1);
+            this.defaultData = result1;
         });
     }
 
@@ -72,7 +74,8 @@ export default class Home extends Vue {
     // leancloud-更新对象
     public avUpdate() {
         let TestObject = AV.Object.createWithoutData('ActEditData', '5e15457f21460d006a625edb');
-        TestObject.set('data', '');
+        console.log(this.defaultData);
+        TestObject.set('data', this.defaultData);
         TestObject.save().then(() => {
             Message({
                 showClose: true,
@@ -84,8 +87,8 @@ export default class Home extends Vue {
 
     // leancloud-获取对象
     public avGet() {
-        let query = new AV.Query('TestObject');
-        query.get('5e0af40921460d006a0a461a').then((todo: Dictionary<any>) => {
+        let query = new AV.Query('ActEditData');
+        query.get('5e15457f21460d006a625edb').then((todo: Dictionary<any>) => {
 			this.data = JSON.stringify(todo._serverData);
 			Message({
                 showClose: true,

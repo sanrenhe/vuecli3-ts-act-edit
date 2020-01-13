@@ -16,10 +16,10 @@ export default {
             "award",
             "awardsType",
         ],
-        editEleBlackList: ["activity.name", "activity.templet_set.is_lamp_on", "prize.short_name"],    // 编辑项黑名单，配置即隐藏
+        editEleBlackList: [],    // 编辑项黑名单，配置即隐藏
         editRenderIgnoreKey: [],                // 自定义忽略的数据字段，即不需要进行特殊处理的数据字段
-        editHandleKey: ["prize", "indicatorTask"],               // 自定义需要处理的数据字段，即在编辑前进行处理的数据字段
-        editUpdateKey: ["prize"],               // 自定义需要更新的数据字段，即在保存成功后 或 在操作过程中 需要更新的数据字段
+        editHandleKey: ["award",],               // 自定义需要处理的数据字段，即在编辑前进行处理的数据字段
+        editUpdateKey: ["award"],               // 自定义需要更新的数据字段，即在保存成功后 或 在操作过程中 需要更新的数据字段
         activeNames: {                          // 控制设置区域显示和隐藏
             active: [
                 "base",

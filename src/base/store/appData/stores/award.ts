@@ -65,14 +65,14 @@ export default {
         award_handle(state:any, data:any) {
             let arr: any = [];
             state.awardSetCustom.forEach((item: any) => {
-                let key = "general_" + item.type;
+                let key = "general_" + item.area;
                 arr = arr.concat(state[key]);
             });
             data.editInfo.award = arr;
         },
         award_update(state:any, data:any) {
             state.awardSetCustom.forEach((item: any) => {
-                let key = "general_" + item.type;
+                let key = "general_" + item.area;
                 state[key].forEach((award: any) => {
                     award.is_valid = 1;
                     award.close = false;

@@ -82,7 +82,7 @@
                     <el-tab-pane
                         style="padding:0px 5px;"
                         v-for="(item, index) in getGeneral(general.area).tabs"
-                        :key="item.id"
+                        :key="index"
                         :label="item.name || '奖品'"
                         :name="item.seq"
                         :closable="item.close"
